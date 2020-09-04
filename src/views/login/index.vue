@@ -57,26 +57,25 @@
         @click.native.prevent="handleLogin"
       >登录</el-button>
     </el-form>
-    <div class="info" style="bottom: 40px;">Beta: 1.0</div>
-    <div class="info">Technical Support: XXX</div>
   </div>
 </template>
 
 <script>
 import md5 from "js-md5";
+import { setToken, getToken } from "@/utils/auth.js";
 export default {
   name: "Login",
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (value.length < 3) {
-        callback(new Error("Please enter the correct user name"));
+      if (!value) {
+        callback(new Error("不能为空！"));
       } else {
         callback();
       }
     };
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
+      if (!value) {
+        callback(new Error("不能为空！"));
       } else {
         callback();
       }
@@ -84,28 +83,28 @@ export default {
     return {
       loginForm: {
         username: "admin",
-        password: "111111"
+        password: "111111",
       },
       loginRules: {
         username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+          { required: true, trigger: "blur", validator: validateUsername },
         ],
         password: [
-          { required: true, trigger: "blur", validator: validatePassword }
-        ]
+          { required: true, trigger: "blur", validator: validatePassword },
+        ],
       },
       loading: false,
       passwordType: "password",
-      redirect: undefined
+      redirect: undefined,
     };
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function (route) {
         this.redirect = route.query && route.query.redirect;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     showPwd() {
@@ -122,39 +121,37 @@ export default {
       let that = this;
       this.loading = true;
       //数据格式验证
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (valid) {
           localStorage.setItem("hasLogin", true);
-          this.$router.push({ path: "/" });
-        } else {
-          console.log("验证失败");
+          this.$router.replace("/");
         }
+        return (this.loading = false);
       });
-      return 0;
       // 可自定义登录时的逻辑处理
-      this.req({
-        url: "login",
-        data: {
-          account: that.loginForm.username,
-          psw: md5(that.loginForm.password + "*/-sz") //对密码进行加盐md5处理
-        },
-        method: "POST"
-      }).then(
-        res => {
-          console.log("res :", res);
-          localStorage.setItem("hasLogin", true);
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
-          this.$router.push({ path: "/" });
-        },
-        err => {
-          console.log("err :", err);
-          this.passwordError = true;
-          this.loading = false;
-        }
-      );
-    }
-  }
+      // this.req({
+      //   url: "login",
+      //   data: {
+      //     account: that.loginForm.username,
+      //     psw: md5(that.loginForm.password + "*/-sz"), //对密码进行加盐md5处理
+      //   },
+      //   method: "POST",
+      // }).then(
+      //   (res) => {
+      //     console.log("res :", res);
+      //     localStorage.setItem("hasLogin", true);
+      //     localStorage.setItem("token", res.data.token);
+      //     localStorage.setItem("userInfo", JSON.stringify(res.data.userInfo));
+      //     this.$router.replace("/");
+      //   },
+      //   (err) => {
+      //     console.log("err :", err);
+      //     this.passwordError = true;
+      //     this.loading = false;
+      //   }
+      // );
+    },
+  },
 };
 </script>
 

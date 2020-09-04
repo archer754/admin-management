@@ -42,7 +42,7 @@ service.interceptors.response.use(
     // if the custom code is not 100, it is judged as an error.
     if (res.code !== 200) {
       Message({
-        message: res.msg || 'Error check your token or method',
+        message: res.msg || '授权失败',
         type: 'error',
         duration: 2 * 1000
       })

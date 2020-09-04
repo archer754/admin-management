@@ -84,6 +84,32 @@ export const constantRoutes = [{
       },
     ]
   },
+  // 汽车服务
+  {
+    path: '/careser',
+    component: Layout,
+    meta: {
+      title: '汽车服务',
+      icon: 'plane'
+    },
+    children: [{
+        path: 'providers',
+        name: 'providers',
+        component: () => import('@/views/carser/Providers'),
+        meta: {
+          title: '服务商',
+        }
+      },
+      {
+        path: 'logo',
+        name: 'logo',
+        component: () => import('@/views/material/check-logo'),
+        meta: {
+          title: '查看logo',
+        }
+      },
+    ]
+  },
 
   //测试页面
   {
